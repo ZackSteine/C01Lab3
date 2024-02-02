@@ -3,7 +3,7 @@ import './App.css';
 
 const baseNote = { title: "", content: "" };
 
-function Dialog({ open, initialNote, closeDialog, postNote: postNoteState }) {
+function Dialog({ open, initialNote, closeDialog, postNote: postNoteState, patchNote: patchNoteState }) {
     // -- Dialog props --
     const [note, setNote] = useState(baseNote);
     const [status, setStatus] = useState("");
@@ -45,16 +45,42 @@ function Dialog({ open, initialNote, closeDialog, postNote: postNoteState }) {
                         close();
                     });
                 }
-            })
+            });
         } catch (error) {
             setStatus("Error trying to post note");
             console.log("Fetch function failed:", error);
         }
     };
 
-    const patchNote = (entry) => {
-        // TODO: code here
-    }
+    const patchNote = async (entry) => {
+        if (!initialNote || !note || !note.title || !note.content) {
+            return;
+        }
+
+        setStatus("Loading...");
+
+        try {
+            await fetch("http://localhost:4000/patchNote/" + initialNote._id, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ title: note.title, content: note.content })
+            }).then(async (response) => {
+                if (!response.ok) {
+                    setStatus("Error trying to patch note");
+                    console.log("Server failed:", response.status);
+                } else {
+                    patchNoteState(initialNote._id, note.title, note.content);
+                    close();
+                }
+            });
+        } catch (error) {
+            setStatus("Error trying to patch note");
+            console.log("Fetch function failed:", error);
+        }
+        console.log(initialNote._id);
+    };
 
     return (
         <dialog open={open} style={DialogStyle.dialog}>
