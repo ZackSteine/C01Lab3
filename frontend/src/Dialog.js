@@ -52,7 +52,7 @@ function Dialog({ open, initialNote, closeDialog, postNote: postNoteState, patch
         }
     };
 
-    const patchNote = async (entry) => {
+    const patchNote = async () => {
         if (!initialNote || !note || !note.title || !note.content) {
             return;
         }
@@ -79,7 +79,6 @@ function Dialog({ open, initialNote, closeDialog, postNote: postNoteState, patch
             setStatus("Error trying to patch note");
             console.log("Fetch function failed:", error);
         }
-        console.log(initialNote._id);
     };
 
     return (
