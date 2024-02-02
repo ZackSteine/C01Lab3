@@ -53,8 +53,23 @@ function App() {
     setDialogOpen(true);
   };
 
-  const deleteNote = () => {
-    console.log("delete note");
+  const deleteNote = async (entry) => {
+    if (!entry || !entry._id) { 
+      return;
+    }
+    try {
+        await fetch("http://localhost:4000/deleteNote/" + entry._id, {
+            method: "DELETE",
+        }).then(async (response) => {
+            if (!response.ok) {
+                console.log("Server failed:", response.status);
+            } else {
+              deleteNoteState(entry._id);
+            }
+        });
+    } catch (error) {
+        console.log("Fetch function failed:", error);
+    }
   };
 
   const deleteAllNotes = (entry) => {
@@ -75,8 +90,8 @@ function App() {
     setNotes((prevNotes) => [...prevNotes, { _id, title, content }]); 
   };
 
-  const deleteNoteState = () => {
-    // code for modifyin state after DELETE here
+  const deleteNoteState = (_id) => {
+    setNotes((prevNotes) => prevNotes.filter((note) => note._id != _id));
   };
 
   const patchNoteState = (_id, title, content) => {
