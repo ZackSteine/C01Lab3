@@ -12,12 +12,6 @@ function App() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogNote, setDialogNote] = useState(undefined);
 
-  const entry = {
-    _id: "5f6e3d9d2e3d2f2f2f2f2f2f",
-    title: "This is a note",
-    content: "This is the content of the note",
-  };
-
   // -- Database interaction functions --
   useEffect(() => {
     const getNotes = async () => {
@@ -57,6 +51,7 @@ function App() {
     if (!entry || !entry._id) { 
       return;
     }
+
     try {
         await fetch("http://localhost:4000/deleteNote/" + entry._id, {
             method: "DELETE",
@@ -72,8 +67,20 @@ function App() {
     }
   };
 
-  const deleteAllNotes = (entry) => {
-    // code here
+  const deleteAllNotes = async () => {
+    try {
+      await fetch("http://localhost:4000/deleteAllNotes", {
+          method: "DELETE",
+      }).then(async (response) => {
+          if (!response.ok) {
+              console.log("Server failed:", response.status);
+          } else {
+            setNotes([]);
+          }
+      });
+    } catch (error) {
+        console.log("Fetch function failed:", error);
+    };
   };
 
   const closeDialog = () => {
@@ -91,13 +98,13 @@ function App() {
   };
 
   const deleteNoteState = (_id) => {
-    setNotes((prevNotes) => prevNotes.filter((note) => note._id != _id));
+    setNotes((prevNotes) => prevNotes.filter((note) => note._id !== _id));
   };
 
   const patchNoteState = (_id, title, content) => {
     setNotes((prevNotes) => 
       prevNotes.map((note) => 
-        note._id == _id ? {...note, title: title, content: content} : note
+        note._id === _id ? {...note, title: title, content: content} : note
       )
     );
   };
