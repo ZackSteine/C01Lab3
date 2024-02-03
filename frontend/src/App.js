@@ -58,6 +58,7 @@ function App() {
         }).then(async (response) => {
             if (!response.ok) {
                 console.log("Server failed:", response.status);
+                alert("Server failed.");
             } else {
               deleteNoteState(entry._id);
             }
@@ -74,6 +75,7 @@ function App() {
       }).then(async (response) => {
           if (!response.ok) {
               console.log("Server failed:", response.status);
+              alert("Server failed.")
           } else {
             setNotes([]);
           }
