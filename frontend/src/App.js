@@ -77,7 +77,7 @@ function App() {
               console.log("Server failed:", response.status);
               alert("Server failed.")
           } else {
-            setNotes([]);
+            deleteAllNotesState();
           }
       });
     } catch (error) {
@@ -102,6 +102,10 @@ function App() {
   const deleteNoteState = (_id) => {
     setNotes((prevNotes) => prevNotes.filter((note) => note._id !== _id));
   };
+
+  const deleteAllNotesState = () => {
+    setNotes([]);
+  }
 
   const patchNoteState = (_id, title, content) => {
     setNotes((prevNotes) => 
